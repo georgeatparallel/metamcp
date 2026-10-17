@@ -67,6 +67,7 @@
               "en/integrations/cursor",
               "en/integrations/claude-desktop",
               "en/integrations/open-web-ui",
+              "en/integrations/parallel-search",
               "en/integrations/general-stdio-with-api-key",
               "en/integrations/general-stdio-with-oauth"
             ]

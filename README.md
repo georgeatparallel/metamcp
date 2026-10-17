@@ -145,6 +145,8 @@ DATABASE_URL=${DB_CONNECTION_STRING}
 ### 🔍 **Inspector**
 Similar to the official MCP inspector, but with **saved server configs** - MetaMCP automatically creates configurations so you can debug MetaMCP endpoints immediately.
 
+For a web research setup, see the [Parallel Search MCP guide](https://docs.metamcp.com/en/integrations/parallel-search) to add free web search and page fetching to a namespace without a Parallel account or API key.
+
 ### ✏️ **Tool Overrides & Annotations**
 - Open a namespace → **Tools** tab to see every tool coming from connected MCP servers.
 - Each saved tool can be expanded and edited inline: update the display **name/title/description** or provide a JSON blob with namespace-specific annotations (for example `{ "annotations": { "readOnlyHint": false } }`).

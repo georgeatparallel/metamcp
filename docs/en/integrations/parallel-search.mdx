@@ -1,0 +1,96 @@
+---
+title: "Parallel Search MCP"
+description: "Add web search and page fetching to a MetaMCP namespace without a Parallel API key"
+---
+
+[Parallel Search MCP](https://docs.parallel.ai/integrations/mcp/search-mcp)
+provides free web search and page fetching with no account or API key required.
+Anonymous searches use Fast mode. Connect it as a Streamable HTTP server, then
+expose its tools alongside your other servers through a MetaMCP endpoint.
+
+## Prerequisites
+
+- A running [MetaMCP instance](/en/quickstart) and a signed-in user.
+- Outbound HTTPS access from the MetaMCP backend to `search.parallel.ai`.
+
+## Import the server
+
+In **MCP Servers**, click **Import JSON**, paste this configuration, and click
+**Import**:
+
+```json
+{
+  "mcpServers": {
+    "ParallelSearch": {
+      "type": "streamable_http",
+      "url": "https://search.parallel.ai/mcp",
+      "headers": {
+        "User-Agent": "MetaMCP (https://github.com/metatool-ai/metamcp)"
+      },
+      "description": "Web search and page fetching with Parallel"
+    }
+  }
+}
+```
+
+Choose an unused server name before importing. If `ParallelSearch` already
+exists, use another name in the JSON or edit that server deliberately. The tool
+prefix below follows the server name you choose.
+
+For the anonymous setup, leave **Bearer Token** empty and skip **Authenticate**.
+No local MCP package or environment variable is needed.
+
+## Add the tools to a namespace
+
+1. Create a [namespace](/en/concepts/namespaces), or edit an existing one, and
+   select `ParallelSearch`.
+2. Open the namespace's **Tools** tab. Keep the server and the tools you want to
+   expose enabled. With the configuration above, the tool names are
+   `ParallelSearch__web_search` and `ParallelSearch__web_fetch`, unless you apply
+   tool name overrides.
+3. Create an [endpoint](/en/concepts/endpoints) for the namespace, or use an
+   existing endpoint assigned to it. Keep your chosen endpoint authentication.
+4. Connect your MCP client to the endpoint's Streamable HTTP URL from the
+   dashboard. For client configuration, see the [Cursor guide](/en/integrations/cursor).
+
+The anonymous Parallel connection does not remove authentication from your
+MetaMCP endpoint. Clients still need the credentials required by that endpoint.
+
+## Verify search and page fetching
+
+Use MetaMCP's [Inspector](/en/concepts/inspector) to connect to your endpoint and
+list its tools. Select `ParallelSearch__web_search` and use these arguments:
+
+```json
+{
+  "objective": "Find the official Model Context Protocol documentation for Streamable HTTP transport.",
+  "search_queries": ["Model Context Protocol Streamable HTTP transport"]
+}
+```
+
+Check that the result contains relevant source URLs and excerpts. Then select
+`ParallelSearch__web_fetch` to read a page:
+
+```json
+{
+  "urls": ["https://modelcontextprotocol.io/docs/learn/architecture"],
+  "objective": "Explain the roles of MCP clients and servers."
+}
+```
+
+Check that the response contains content from the requested page. You can also
+fetch a URL returned by your search. Tool arguments are JSON; the prefixed tool
+name is selected separately in Inspector.
+
+## Troubleshooting
+
+- **Tools are missing:** check the server connection, namespace membership, and
+  server/tool enabled state. A renamed server or a tool name override changes
+  the names shown above.
+- **Connection fails:** confirm the server type is **Streamable HTTP**, the URL
+  is `https://search.parallel.ai/mcp`, and the backend can reach it over HTTPS.
+- **Requests are rate limited:** anonymous access is intended for exploration
+  and light use. Follow any retry guidance from the service. For higher limits,
+  create a [Parallel account](https://platform.parallel.ai) and set its API key
+  in the server's **Bearer Token** field. Leave that field empty to keep using
+  anonymous access.
